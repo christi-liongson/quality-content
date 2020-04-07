@@ -1,0 +1,16 @@
+beautifulsoup4==4.8.2
+bs4==0.0.1
+Django==2.2.11
+joblib==0.14.1
+nltk==3.4.5
+numpy==1.18.1
+pkg-resources==0.0.0
+pytz==2019.3
+scikit-learn==0.22.2.post1
+scipy==1.4.1
+selenium==3.141.0
+six==1.14.0
+sklearn==0.0
+soupsieve==2.0
+sqlparse==0.3.1
+urllib3==1.25.8

@@ -1,0 +1,186 @@
+{%load staticfiles%}
+<!-- {% load static %} -->
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Quality Content</title>
+
+  <!-- Custom fonts for this template-->
+  <link href="{% static '/vendor/fontawesome-free/css/all.min.css' %}" rel="stylesheet" type="text/css">
+  <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" integrity="sha384-Gn5384xqQ1aoWXA+058RXPxPg6fy4IWvTNh0E263XmFcJlSAwiGgFAW/dAiS6JXm" crossorigin="anonymous">
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
+  <!-- Custom styles for this template-->
+  <link href="{% static '/css/sb-admin-2.css' %}" rel="stylesheet">
+
+
+</head>
+
+<body id="page-top">
+
+  <!-- Page Wrapper -->
+  <div id="wrapper">
+
+    <!-- Sidebar -->
+    <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
+
+      <!-- Sidebar - Brand -->
+      <a class="sidebar-brand d-flex align-items-center justify-content-center" href="index.html">
+        <div class="sidebar-brand-icon">
+          <img src="{% static '/img/iconfinder_23_2135798.png' %}" width="25%"/> Summary Report
+      </div>
+      <div class="sidebar-brand-text mx-3"></div>
+  </a>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider my-0">
+
+  <!-- Nav Item - Dashboard -->
+  <li class="nav-item">
+    <a class="nav-link" href="/">
+      <i class="fas fa-fw fa-search"></i>
+      <span>Search</span></a>
+  </li>
+
+  <!-- Divider -->
+  <hr class="sidebar-divider">
+
+  <!-- Heading -->
+  <div class="sidebar-heading">
+    Reports
+</div>
+
+<!-- Nav Item - Pages Collapse Menu -->
+<li class="nav-item">
+    <a class="nav-link" href="/summary">
+      <i class="fas fa-fw fa-file-alt"></i>
+      <span>Summary Report</span>
+  </a>
+</li>
+<li class="nav-item">
+    <a class="nav-link" href="/about">
+      <i class="fas fa-fw fa-info-circle"></i>
+      <span>About</span>
+  </a>
+</li>
+</ul>
+<!-- End of Sidebar -->
+
+<!-- Content Wrapper -->
+<div id="content-wrapper" class="d-flex flex-column">
+
+  <!-- Main Content -->
+  <div id="content">
+
+
+      <!-- Sidebar Toggle (Topbar) -->
+      <button id="sidebarToggleTop" class="btn btn-link d-md-none rounded-circle mr-3">
+        <i class="fa fa-bars"></i>
+    </button>
+
+
+
+    <!-- Begin Page Content -->
+    <div class="container-fluid">
+
+      <!-- Page Heading -->
+
+      <h1 class="h3 mb-4 text-gray-800">About</h1>
+
+      <h2>Introduction</h2>
+
+      <p>This project analyzes cable news transcripts from CNN, Fox, and MSNBC from January 1st, 2020 to the present. We were curious to know which speakers appeared most often and on the widest variety of different shows and networks, as well as how much speaking time they were given.</p>
+      <p>To do this, we thus created an extensive web-scraping operation to collect texual information of each episode, most importantly the text of the transcripts attributed with their respective speaker.</p>
+      <p>The Django interface allows users to input a speaker name (required) and speaker title, show name, network, and search terms to generate summary visualizations and a topic analysis (using TF-IDF modeling) that displays top tokens and sentences.</p>
+
+
+      <h2>Software Structure</h2>
+
+      <h3>Installation</h3>
+      <p>All required libraries to run the full program can be found in the file “requirements.txt”, and can be installed from the command line using _, ideally in a virtual environment setup. The one exception is the Firefox webdriver for the selenium package (for use in web-scraping Fox News), which must be downloaded from <a href="https://github.com/mozilla/geckodriver/releases" target="blank"> https://github.com/mozilla/geckodriver/releases</a> and placed in the user bin.</p>
+
+      <h3>Web scraper</h3>
+      <p>For the web-scraping operation (built by Charlie), the database into which we put the transcript information we web-scraped is called news_db_2020.sqlite3, and the schema for this database can be found in news.sql. The file run_crawlers.py can be run from the terminal with no arguments. This file runs all associated python scripts <em>crawler_fox.py</em>, <em>crawler_cnn.py</em>, and <em>crawler_msnbc.py</em> that web-scrape from Fox, CNN, and MSNBC, and place the show, episode, speaker, and transcript information into the database.</p>
+
+      <p>To run the crawler, type <strong>python run_crawlers.py</strong> in the terminal.</p>
+
+      <p>The file <em>crawler_util.py</em> contains functions common to each of the three aforementioned crawlers. It contains functions that add newline characters to each break in the raw transcript text, and later that assign each chunk of text to the speaker at the beginning of them, using a combination of text and regular expression operations. For the most part, within a news transcript, the first time a name appears, it appears as “&lt;FULL NAME&gt;, &lt;SPEAKER TITLE/DESCRIPTION&gt;”, and subsequently the name appears as “&lt;LAST_NAME&gt;”. Thus when attributing a quote to a speaker when inserting into the database, all subsequent quotes from the same speaker should be attributed to the same speaker name (and ID, for database purposes). The functions in this file resolve conflicts, particularly when two speakers in the transcript have the same last name. As well, in most transcripts, video and audio clips are noted by (BEGIN VIDEO CLIP) and (END VIDEO CLIP), or something similar. We removed these from the text of the transcript since we were mainly interested in speakers who had actually appeared on the show intentionally.</p>
+
+      <h3>User Interface</h3>
+      <p>The user interface is built using Django 2.0.2 (Christi) and allows users to query the database using a form and perform textual transcript analysis and view summary graphical information  through the respective <em>analyze.py</em> and <em>visualize.py</em> scripts. Top tokens and sentences will appear as cards on the interface and data visualizations will open in a new window. Data visualizations will need to be closed in order for the user interface to finish loading.</p>
+
+      <p>To run the web interface and access the topic modeling and visualizations, navigate to final_project/ui and run the command python manage.py runserver.</p>
+
+      <h3>Topic Modeling</h3>
+      <p>The topic modeling (Christi) script in <em>analyze.py</em> takes a data frame of transcript data and applies sci-kit learn’s TF-IDF vectorizer to identify top tokens. Before extracting top tokens, the transcript data is preprocessed to combine transcript blocks into each episode, remove stopwords utilizing nltk’s stopwords corpora and manual additions, and tokenize. Top tokens per episode are identified with the highest modeled TF-IDF score. </p>
+
+      <p>Sentences are also broken down and further tokenized using nltk’s sent_tokenize. Sentences are ranked using the mean modeled TF-IDF scores. Sentences with fewer than three words are assumed to be greetings or short asides and removed from the analysis.</p>
+
+      <p>Finally, episodes that have identified less than ten top tokens and three top sentences are assumed to lack substantial information or spillover from a previous episode. Those episodes are removed from the topic modeling output but may be included in other analysis.</p>
+
+      <h3>What we Learned</h3>
+      <p>After attempting to crawl CNN, MSNBC, and Fox transcript websites and populate a database, we found the three websites to be substantially different in terms of content layout and “quirks” in the interaction with their website. The main reason for this hurdle was that much of the content was a “rush transcript” and contained many typos and inconsistencies of dates, names, and other transcript markers such as commercial breaks and video clips.  As a result, many manual changes needed to be put in place in order to handle these inconsistencies.</p>
+
+      <p>Sci-kit learn, while a very robust machine learning tool for python and is effective at calculating TF-IDF scores for many episodes, can take a long time to run.  However, we’ve found that sci-kit learn is more efficient at conducting TF-IDF analysis versus the loops and dictionaries created in a previous programming assignment. The final analyze.py utilizes Pandas data frames and apply functions to minimize runtime.</p>
+
+      <h3>Next Steps</h3>
+      <p>With additional time, expansions for this project may include:</p>
+      <ol>
+        <li>Crawling previous years and adding them to the database. While this would allow us to gather a more substantial corpus for speaker analysis, this would require additional manual fixes to typos and inconsistencies that the current web crawler has not yet encountered.</li>
+        <li>Associating speakers with the database through a Jaro-Winkler distance algorithm instead of manual associations. This would require additional training to find the optimal thresholds for speaker name matching.</li>
+        <li>Speed efficiency in textual analysis</li>
+        <li>User interface adjustments, such as in-line display of data visualizations and dynamic drop-down options for speaker selection</li>
+        <li>Additional search and filter functionalities: view, filter, and report by show and network</li>
+    </ol>
+
+
+</div>
+<!-- /.container-fluid -->
+
+</div>
+<!-- End of Main Content -->
+
+<!-- Footer -->
+<footer class="sticky-footer bg-white">
+    <div class="container my-auto">
+      <div class="copyright text-center my-auto">
+        <span>Copyright &copy; CAPP 30122: Quality Content Group</span>
+    </div>
+</div>
+</footer>
+<!-- End of Footer -->
+
+</div>
+<!-- End of Content Wrapper -->
+
+</div>
+<!-- End of Page Wrapper -->
+
+<!-- Scroll to Top Button-->
+<a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+</a>
+
+
+<!-- Bootstrap core JavaScript-->
+<script src="{% static '/vendor/jquery/jquery.min.js' %}"></script>
+<script src="{% static '/vendor/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+
+<!-- Core plugin JavaScript-->
+<script src="{% static '/vendor/jquery-easing/jquery.easing.min.js' %}"></script>
+
+<!-- Custom scripts for all pages-->
+<script src="{% static '/js/sb-admin-2.min.js' %}"></script>
+
+</body>
+
+</html>
