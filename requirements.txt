@@ -1,6 +1,6 @@
 beautifulsoup4==4.8.2
 bs4==0.0.1
-Django==2.2.13
+Django==2.2.24
 joblib==0.14.1
 nltk==3.4.5
 numpy==1.18.1
